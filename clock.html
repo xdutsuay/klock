@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Activity Tracker</title>
+  <link rel="stylesheet" href="activity-tracker.css">
+  <script type="text/javascript">
+    // Create an empty JSON object to store activities for the day
+    var activities = {};
+
+    function addActivity() {
+      // Get the activity, from time, and to time from the user
+      var activity = document.getElementById('activity').value;
+      var fromTime = document.getElementById('fromTime').value;
+      var toTime = document.getElementById('toTime').value;
+
+      // Add the activity and time to the JSON object
+      activities[fromTime + ' - ' + toTime] = activity;
+
+      // Clear the input fields
+      document.getElementById('activity').value = '';
+      document.getElementById('fromTime').value = '';
+      document.getElementById('toTime').value = '';
+
+      // Display the updated activities
+      showActivities();
+    }
+
+    function showActivities() {
+      // Get the activity list element
+      var activityList = document.getElementById('activityList');
+
+      // Clear any existing activities
+      activityList.innerHTML = '';
+
+      // Loop through the activities and add them to the list
+      for (var time in activities) {
+        var activity = activities[time];
+        var activityItem = document.createElement('li');
+        activityItem.appendChild(document.createTextNode(time + ': ' + activity));
+        activityList.appendChild(activityItem);
+      }
+
+      // Convert the activities JSON object to a string and store it in local storage
+      localStorage.setItem('activities', JSON.stringify(activities));
+    }
+
+    function clearActivities() {
+      // Clear the activities JSON object and the local storage
+      activities = {};
+      localStorage.removeItem('activities');
+
+      // Clear the activity list
+      document.getElementById('activityList').innerHTML = '';
+    }
+
+    // On page load, check for any stored activities and display them
+    window.onload = function() {
+      var storedActivities = localStorage.getItem('activities');
+      if (storedActivities) {
+        activities = JSON.parse(storedActivities);
+        showActivities();
+      }
+    };
+  </script>
+</head>
+<body>
+  <h1>Activity Tracker</h1>
+  <div class="input-group">
+    <label for="activity">Activity:</label>
+    <input type="text" id="activity">
+  </div>
+  <div class="input-group">
+    <label for="fromTime">From Time:</label>
+    <input type="text" id="fromTime" placeholder="HH:MM">
+  </div>
+  <div class="input-group">
+    <label for="toTime">To Time:</label>
+    <input type="text" id="toTime" placeholder="HH:MM">
+  </div>
+  <button onclick="addActivity()">Add Activity</button>
+  <button onclick="clearActivities()">Clear Activities</button>
+  <h2>Today's Activities</h2>
+  <ul id="activityList"></ul>
+  <div class="footer">
+    Designed by xdutsuay
+  </div>
+</body>
+</html>
